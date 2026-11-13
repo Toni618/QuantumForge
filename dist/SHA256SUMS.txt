@@ -1,0 +1,1 @@
+16f5bc7df9219dcd36a09078aa9ae4a6ecc6c7c66cdb21b9934e9550d3c66ba1  dist/quantumforge-0.2.0-py3-none-any.whl

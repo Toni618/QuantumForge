@@ -1,0 +1,45 @@
+name: Windows desktop release
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Python backend and packager
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . pyinstaller==6.16.0
+      - name: Bundle Python backend
+        run: |
+          pyinstaller --clean --noconfirm --onefile --name QuantumForgeBackend --collect-all scipy --collect-all sympy --collect-all h5py scripts/backend_entry.py
+          New-Item -ItemType Directory -Force backend-dist | Out-Null
+          Copy-Item dist/QuantumForgeBackend.exe backend-dist/QuantumForgeBackend.exe
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version '^2' --locked
+      - name: Build MSI and NSIS installers
+        working-directory: src-tauri
+        run: cargo tauri build --bundles msi,nsis
+      - name: Verify installer artifacts
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem src-tauri/target/release/bundle -Recurse -Include *.msi,*.exe
+          if ($files.Count -lt 2) { throw 'Expected MSI and NSIS installer artifacts were not both found.' }
+          $files | Get-FileHash -Algorithm SHA256 | Format-Table -AutoSize

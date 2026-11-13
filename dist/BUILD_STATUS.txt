@@ -1,0 +1,28 @@
+QuantumForge 0.2.0 — engineering build status
+Environment: Linux x86_64, Python 3.13.5, Node 22.16.0, npm 10.9.2
+Rust/Cargo: not installed (rustc and cargo not found)
+Network: npm registry DNS unavailable (EAI_AGAIN)
+
+PASS
+- pytest: 25 passed
+- python -m compileall -q quantumforge tests scripts
+- Python wheel built: quantumforge-0.2.0-py3-none-any.whl
+- Wheel installed/import smoke check with the environment's preinstalled scientific dependencies
+- Live API process started; GET /health returned status=ok, version=0.2.0
+- API smoke: spin operators, Bell density matrix, Schwarzschild metric, free scalar lattice, geodesic
+- Schwarzschild vacuum benchmark: Ricci tensor and scalar simplify to zero
+- Unit 2-sphere benchmark: Ricci scalar equals 2
+- Circular timelike and photon-sphere null geodesic normalization benchmarks passed
+- ZIP archive integrity checked at packaging time (see delivery note)
+
+BLOCKED / NOT PRODUCED
+- React production build: npm install failed because registry DNS/network unavailable and offline cache was empty
+- Tauri compile: unavailable because Rust/Cargo are not installed
+- Windows MSI/NSIS installers: not produced; Windows CI workflow is source-only and has not run
+- Linux AppImage/DEB/RPM: not produced
+- Independent scientific review: not performed
+- Professional security audit: not performed
+- Code signing: not configured
+
+Classification: engineering source build / pre-release. NOT a sale-ready desktop release.
+See docs/FINAL_DELIVERY.md and docs/KNOWN_LIMITATIONS.md.
